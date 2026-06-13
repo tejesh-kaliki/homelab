@@ -1,0 +1,72 @@
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ./config/prowlarr:/config
+    ports:
+      - 9696:9696
+    networks:
+      - media
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ./config/sonarr:/config
+      - ./data:/data
+    ports:
+      - 8989:8989
+    networks:
+      - media
+    depends_on:
+      - qbittorrent
+      - prowlarr
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=8080
+    volumes:
+      - ./config/qbittorrent:/config
+      - ./data:/data
+    ports:
+      - 8080:8080
+      # torrent port
+      - 6881:6881
+      - 6881:6881/udp
+    networks:
+      - media
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Kolkata
+    volumes:
+      - ./config/jellyfin:/config
+      - ./data/media:/media
+    ports:
+      - 8096:8096
+    networks:
+      - media
+
+networks:
+  media:
+    driver: bridge

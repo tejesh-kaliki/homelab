@@ -1,3 +1,7 @@
 /firefly-iii/.db.env
 /firefly-iii/.env
 /firefly-iii/.importer.env
+
+# sonarr stack — runtime-generated, not ours
+/sonarr/config/
+/sonarr/data/
