@@ -4,6 +4,9 @@ services:
     hostname: app
     container_name: firefly_iii_core
     restart: always
+    labels:
+      homelab.stack: finance
+      homelab.role: app
     volumes:
       - firefly_iii_upload:/var/www/html/storage/upload
     env_file: .env
@@ -18,6 +21,9 @@ services:
     hostname: db
     container_name: firefly_iii_db
     restart: always
+    labels:
+      homelab.stack: finance
+      homelab.role: database
     env_file: .db.env
     networks:
       - firefly_iii
@@ -32,6 +38,9 @@ services:
     image: alpine
     restart: always
     container_name: firefly_iii_cron
+    labels:
+      homelab.stack: finance
+      homelab.role: cron
     env_file: .env
     command: ["sh", "-c", "apk add tzdata && \
       (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
@@ -43,18 +52,21 @@ services:
     depends_on:
       - app
 
-  importer:
-    image: fireflyiii/data-importer:latest
-    hostname: importer
-    restart: always
-    container_name: firefly_iii_importer
-    networks:
-      - firefly_iii
-    ports:
-      - '10776:8080'
-    depends_on:
-      - app
-    env_file: .importer.env
+  # importer:
+  #   image: fireflyiii/data-importer:latest
+  #   hostname: importer
+  #   restart: always
+  #   container_name: firefly_iii_importer
+  #   labels:
+  #     homelab.stack: finance
+  #     homelab.role: importer
+  #   networks:
+  #     - firefly_iii
+  #   ports:
+  #     - '10776:8080'
+  #   depends_on:
+  #     - app
+  #   env_file: .importer.env
 
 volumes:
    firefly_iii_upload:

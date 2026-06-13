@@ -5,3 +5,6 @@
 # sonarr stack — runtime-generated, not ours
 /sonarr/config/
 /sonarr/data/
+
+# monitoring stack — only prometheus.yml and grafana provisioning are ours
+/monitoring/config/grafana/provisioning/dashboards/*.json
