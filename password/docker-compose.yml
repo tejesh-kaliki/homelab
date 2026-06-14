@@ -10,6 +10,7 @@ services:
     volumes:
       - ./vw-data/:/data/
     networks:
+
       - homelab_proxy
 
 networks:

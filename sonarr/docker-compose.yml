@@ -12,10 +12,9 @@ services:
       - TZ=Asia/Kolkata
     volumes:
       - ./config/prowlarr:/config
-    ports:
-      - 9696:9696
     networks:
       - media
+      - homelab_proxy
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -31,10 +30,9 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
-    ports:
-      - 8989:8989
     networks:
       - media
+      - homelab_proxy
     depends_on:
       - qbittorrent
       - prowlarr
@@ -55,12 +53,12 @@ services:
       - ./config/qbittorrent:/config
       - ./data:/data
     ports:
-      - 8080:8080
-      # torrent port
+      # torrent port — must stay exposed for seeding/downloading
       - 6881:6881
       - 6881:6881/udp
     networks:
       - media
+      - homelab_proxy
 
   jellyfin:
     image: jellyfin/jellyfin:latest
@@ -74,11 +72,12 @@ services:
     volumes:
       - ./config/jellyfin:/config
       - ./data/media:/media
-    ports:
-      - 8096:8096
     networks:
       - media
+      - homelab_proxy
 
 networks:
   media:
     driver: bridge
+  homelab_proxy:
+    external: true

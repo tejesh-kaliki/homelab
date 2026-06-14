@@ -12,8 +12,7 @@ services:
     env_file: .env
     networks:
       - firefly_iii
-    ports:
-      - 10775:8080
+      - homelab_proxy
     depends_on:
       - db
   db:
@@ -75,3 +74,5 @@ volumes:
 networks:
   firefly_iii:
     driver: bridge
+  homelab_proxy:
+    external: true

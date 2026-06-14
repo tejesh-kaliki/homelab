@@ -3,26 +3,44 @@
 		dns cloudflare {$CLOUDFLARE_API_TOKEN}
 	}
 
+	# Password manager
 	@vaultwarden host vaultwarden.{$BASE_DOMAIN}
 	handle @vaultwarden {
 		reverse_proxy vaultwarden:80
 	}
 
-	@monitoring host monitoring.{$BASE_DOMAIN}
-	handle @monitoring {
-		reverse_proxy beszel:8090
-	}
-
+	# Finance
 	@firefly host firefly.{$BASE_DOMAIN}
 	handle @firefly {
 		reverse_proxy firefly_iii_core:8080
 	}
 
-	# Add more services:
-	# @myservice host myservice.{$BASE_DOMAIN}
-	# handle @myservice {
-	#   reverse_proxy <container_name>:<port>
-	# }
+	# Media
+	@jellyfin host jellyfin.{$BASE_DOMAIN}
+	handle @jellyfin {
+		reverse_proxy jellyfin:8096
+	}
+
+	@sonarr host sonarr.{$BASE_DOMAIN}
+	handle @sonarr {
+		reverse_proxy sonarr:8989
+	}
+
+	@prowlarr host prowlarr.{$BASE_DOMAIN}
+	handle @prowlarr {
+		reverse_proxy prowlarr:9696
+	}
+
+	@qbittorrent host qbittorrent.{$BASE_DOMAIN}
+	handle @qbittorrent {
+		reverse_proxy qbittorrent:8080
+	}
+
+	# Monitoring
+	@monitoring host monitoring.{$BASE_DOMAIN}
+	handle @monitoring {
+		reverse_proxy beszel:8090
+	}
 
 	handle {
 		respond 404

@@ -4,12 +4,13 @@ services:
     container_name: beszel
     restart: unless-stopped
     environment:
-      APP_URL: http://localhost:8090
-    ports:
-      - 8090:8090
+      APP_URL: https://monitoring.${BASE_DOMAIN}
     volumes:
       - beszel_data:/beszel_data
       - beszel_socket:/beszel_socket
+    networks:
+      - monitoring
+      - homelab_proxy
     healthcheck:
       test: ['CMD', '/beszel', 'health', '--url', 'http://localhost:8090']
       interval: 120s
@@ -20,7 +21,6 @@ services:
     image: henrygd/beszel-agent
     container_name: beszel-agent
     restart: unless-stopped
-    network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - beszel_agent_data:/var/lib/beszel-agent
@@ -30,10 +30,18 @@ services:
       LISTEN: 45876
       KEY: $BESZEL_KEY
       TOKEN: $BESZEL_TOKEN
-      HUB_URL: http://localhost:8090
+      HUB_URL: http://beszel:8090
+    networks:
+      - monitoring
     healthcheck:
       test: ['CMD', '/agent', 'health']
       interval: 120s
+
+networks:
+  monitoring:
+    driver: bridge
+  homelab_proxy:
+    external: true
 
 volumes:
   beszel_data:
