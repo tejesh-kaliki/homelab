@@ -12,3 +12,4 @@
 /proxy/.env
 /password/.env
 /password/vw-data
+backups/
