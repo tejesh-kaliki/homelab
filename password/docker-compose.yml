@@ -1,0 +1,17 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      DOMAIN: "https://vaultwarden.${BASE_DOMAIN}"
+      SIGNUPS_ALLOWED: "true"
+      WEBSOCKET_ENABLED: "true"
+    volumes:
+      - ./vw-data/:/data/
+    networks:
+      - homelab_proxy
+
+networks:
+  homelab_proxy:
+    external: true

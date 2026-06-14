@@ -1,0 +1,24 @@
+services:
+  caddy:
+    build: .
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    env_file: .env
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: homelab_proxy
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

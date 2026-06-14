@@ -9,3 +9,6 @@
 # monitoring stack — only prometheus.yml and grafana provisioning are ours
 /monitoring/config/grafana/provisioning/dashboards/*.json
 /monitoring/.env
+/proxy/.env
+/password/.env
+/password/vw-data

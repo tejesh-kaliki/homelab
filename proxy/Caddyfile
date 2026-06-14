@@ -1,0 +1,30 @@
+*.{$BASE_DOMAIN}, {$BASE_DOMAIN} {
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+
+	@vaultwarden host vaultwarden.{$BASE_DOMAIN}
+	handle @vaultwarden {
+		reverse_proxy vaultwarden:80
+	}
+
+	@monitoring host monitoring.{$BASE_DOMAIN}
+	handle @monitoring {
+		reverse_proxy beszel:8090
+	}
+
+	@firefly host firefly.{$BASE_DOMAIN}
+	handle @firefly {
+		reverse_proxy firefly_iii_core:8080
+	}
+
+	# Add more services:
+	# @myservice host myservice.{$BASE_DOMAIN}
+	# handle @myservice {
+	#   reverse_proxy <container_name>:<port>
+	# }
+
+	handle {
+		respond 404
+	}
+}
