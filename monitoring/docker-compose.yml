@@ -1,62 +1,41 @@
 services:
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
+  beszel:
+    image: henrygd/beszel:latest
+    container_name: beszel
     restart: unless-stopped
-    privileged: true
-    labels:
-      homelab.stack: monitoring
-      homelab.role: metrics-collector
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-    networks:
-      - monitoring
-
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    restart: unless-stopped
-    labels:
-      homelab.stack: monitoring
-      homelab.role: metrics-store
-    volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-      - --storage.tsdb.retention.time=30d
-    networks:
-      - monitoring
-    depends_on:
-      - cadvisor
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    labels:
-      homelab.stack: monitoring
-      homelab.role: dashboard
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - ./config/grafana/provisioning:/etc/grafana/provisioning
-      - grafana_data:/var/lib/grafana
+      APP_URL: http://localhost:8090
     ports:
-      - 3001:3000
-    networks:
-      - monitoring
-    depends_on:
-      - prometheus
+      - 8090:8090
+    volumes:
+      - beszel_data:/beszel_data
+      - beszel_socket:/beszel_socket
+    healthcheck:
+      test: ['CMD', '/beszel', 'health', '--url', 'http://localhost:8090']
+      interval: 120s
+      start_period: 10s
+      timeout: 5s
+
+  beszel-agent:
+    image: henrygd/beszel-agent
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - beszel_agent_data:/var/lib/beszel-agent
+      # monitor other disks / partitions by mounting a folder in /extra-filesystems
+      # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
+    environment:
+      LISTEN: 45876
+      KEY: $BESZEL_KEY
+      TOKEN: $BESZEL_TOKEN
+      HUB_URL: http://localhost:8090
+    healthcheck:
+      test: ['CMD', '/agent', 'health']
+      interval: 120s
 
 volumes:
-  prometheus_data:
-  grafana_data:
-
-networks:
-  monitoring:
-    driver: bridge
+  beszel_data:
+  beszel_socket:
+  beszel_agent_data:

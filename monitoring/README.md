@@ -1,16 +1,24 @@
-# Monitoring — cAdvisor + Prometheus + Grafana
+# Monitoring — Beszel
 
-Tracks CPU, RAM, and network usage across all running Docker containers.
+Tracks CPU, RAM, disk, and network usage across all running Docker containers via Beszel hub + agent.
 
 ## Services
 
 | Service | Port | Purpose |
 |---|---|---|
-| cAdvisor | 8081 | Scrapes per-container metrics from Docker |
-| Prometheus | 9090 | Stores metrics (30 day retention) |
-| Grafana | 3000 | Dashboards |
+| beszel | 8090 | Web UI and hub — stores metrics, shows dashboards |
+| beszel-agent | 45876 | Runs on the host, scrapes Docker and system stats |
 
-## Start
+## Setup
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```
+BESZEL_KEY=<hub public key>
+BESZEL_TOKEN=<agent token>
+```
+
+Then start the stack:
 
 ```bash
 docker compose up -d
@@ -18,22 +26,12 @@ docker compose up -d
 
 ## First boot
 
-Open Grafana at http://localhost:3000 — login `admin` / `admin`, it will prompt you to change the password.
+Open Beszel at http://localhost:8090 — create an admin account on first visit.
 
-Prometheus is pre-wired as the default datasource via provisioning — nothing to configure.
-
-### Load the cAdvisor dashboard
-
-Grafana has a community dashboard that works out of the box:
-
-1. Dashboards → Import
-2. Enter ID `19792` (cAdvisor + Prometheus, well maintained)
-3. Select Prometheus as the datasource → Import
-
-You'll immediately see per-container CPU, RAM, and network graphs for every running container across all your stacks.
+Add the local agent from the UI: use `host.docker.internal` (or `localhost` since the agent uses `network_mode: host`) on port `45876`. Copy the key and token shown there into your `.env`, then restart the agent container.
 
 ## Notes
 
-- Prometheus data is stored in a named Docker volume (`prometheus_data`) — survives container restarts
-- Grafana state (dashboards you save, users) is in `grafana_data` volume
-- `config/prometheus.yml` and `config/grafana/provisioning/` are the only files we own — everything else is runtime
+- Beszel data (metrics history, users, config) is stored in the `beszel_data` volume — survives container restarts
+- Agent state is in `beszel_agent_data`
+- To monitor additional disks, uncomment and adjust the `/extra-filesystems` volume mount in `docker-compose.yml`
