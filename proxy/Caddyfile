@@ -12,6 +12,7 @@
 	# Finance
 	@firefly host firefly.{$BASE_DOMAIN}
 	handle @firefly {
+		header Content-Security-Policy ""
 		reverse_proxy firefly_iii_core:8080
 	}
 
