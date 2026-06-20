@@ -49,6 +49,13 @@
 		reverse_proxy memos:5230
 	}
 
+	# Service discovery dashboard
+	@dashboard host {$BASE_DOMAIN}
+	handle @dashboard {
+		root * /srv/dashboard
+		file_server
+	}
+
 	handle {
 		respond 404
 	}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Homelab Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Homelab</p>
+          <h1>Service Dashboard</h1>
+          <p class="lede">
+            Quick access to the services published behind this proxy.
+          </p>
+        </div>
+        <div class="domain-card" aria-label="Current domain">
+          <div class="domain-card__header">
+            <span>Base domain</span>
+            <button id="domain-toggle" type="button" aria-label="Hide base domain" aria-pressed="false">
+              <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.1 12s3.6-6.5 9.9-6.5S21.9 12 21.9 12s-3.6 6.5-9.9 6.5S2.1 12 2.1 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m4 4 16 16" />
+                <path d="M10.6 5.7c.5-.1.9-.2 1.4-.2 6.3 0 9.9 6.5 9.9 6.5a17.3 17.3 0 0 1-2.7 3.4" />
+                <path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" />
+                <path d="M6.2 6.9A18.2 18.2 0 0 0 2.1 12s3.6 6.5 9.9 6.5c1.6 0 3-.4 4.2-1" />
+              </svg>
+            </button>
+          </div>
+          <strong id="base-domain">loading...</strong>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="Dashboard tools">
+        <label class="search">
+          <span>Search services</span>
+          <input id="service-search" type="search" placeholder="Filter by name, tag, or purpose" autocomplete="off" />
+        </label>
+      </section>
+
+      <section class="service-group" aria-labelledby="daily-heading">
+        <div class="group-heading">
+          <p>Daily</p>
+          <h2 id="daily-heading">Everyday Tools</h2>
+        </div>
+        <div class="service-grid">
+          <a class="service-card" data-subdomain="vaultwarden" data-tags="password secrets vault">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/vaultwarden.svg" alt="" loading="lazy" />
+              <span>VW</span>
+            </span>
+            <span>
+              <strong>Vaultwarden</strong>
+              <small>Password manager</small>
+            </span>
+          </a>
+          <a class="service-card" data-subdomain="memos" data-tags="notes journal snippets">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/memos.svg" alt="" loading="lazy" />
+              <span>ME</span>
+            </span>
+            <span>
+              <strong>Memos</strong>
+              <small>Notes and quick capture</small>
+            </span>
+          </a>
+          <a class="service-card" data-subdomain="firefly" data-tags="finance budget money">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/firefly-iii.svg" alt="" loading="lazy" />
+              <span>FI</span>
+            </span>
+            <span>
+              <strong>Firefly III</strong>
+              <small>Personal finance</small>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section class="service-group" aria-labelledby="media-heading">
+        <div class="group-heading">
+          <p>Media</p>
+          <h2 id="media-heading">Media Stack</h2>
+        </div>
+        <div class="service-grid">
+          <a class="service-card" data-subdomain="jellyfin" data-tags="movies tv music streaming">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyfin.svg" alt="" loading="lazy" />
+              <span>JF</span>
+            </span>
+            <span>
+              <strong>Jellyfin</strong>
+              <small>Media server</small>
+            </span>
+          </a>
+          <a class="service-card" data-subdomain="sonarr" data-tags="series tv automation">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sonarr.svg" alt="" loading="lazy" />
+              <span>SO</span>
+            </span>
+            <span>
+              <strong>Sonarr</strong>
+              <small>Series automation</small>
+            </span>
+          </a>
+          <a class="service-card" data-subdomain="prowlarr" data-tags="indexers search torrent usenet">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prowlarr.svg" alt="" loading="lazy" />
+              <span>PR</span>
+            </span>
+            <span>
+              <strong>Prowlarr</strong>
+              <small>Indexer management</small>
+            </span>
+          </a>
+          <a class="service-card" data-subdomain="qbittorrent" data-tags="downloads torrents queue">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/qbittorrent.svg" alt="" loading="lazy" />
+              <span>QB</span>
+            </span>
+            <span>
+              <strong>qBittorrent</strong>
+              <small>Download client</small>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section class="service-group" aria-labelledby="ops-heading">
+        <div class="group-heading">
+          <p>Ops</p>
+          <h2 id="ops-heading">Infrastructure</h2>
+        </div>
+        <div class="service-grid">
+          <a class="service-card" data-subdomain="monitoring" data-tags="monitoring health beszel infrastructure">
+            <span class="service-icon">
+              <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/beszel.svg" alt="" loading="lazy" />
+              <span>MO</span>
+            </span>
+            <span>
+              <strong>Monitoring</strong>
+              <small>Host and service health</small>
+            </span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const baseDomain = window.location.hostname;
+      const baseDomainElement = document.getElementById("base-domain");
+      const domainToggle = document.getElementById("domain-toggle");
+      const domainHiddenKey = "dashboard-base-domain-hidden";
+
+      baseDomainElement.textContent = baseDomain || "local";
+
+      function setDomainVisibility(isHidden) {
+        baseDomainElement.classList.toggle("is-hidden", isHidden);
+        domainToggle.classList.toggle("is-active", isHidden);
+        domainToggle.setAttribute("aria-label", isHidden ? "Show base domain" : "Hide base domain");
+        domainToggle.setAttribute("aria-pressed", String(isHidden));
+        localStorage.setItem(domainHiddenKey, String(isHidden));
+      }
+
+      setDomainVisibility(localStorage.getItem(domainHiddenKey) === "true");
+
+      domainToggle.addEventListener("click", () => {
+        setDomainVisibility(!baseDomainElement.classList.contains("is-hidden"));
+      });
+
+      document.querySelectorAll("[data-subdomain]").forEach((card) => {
+        const subdomain = card.dataset.subdomain;
+        card.href = `https://${subdomain}.${baseDomain}`;
+        card.target = "_self";
+      });
+
+      document.querySelectorAll(".service-icon img").forEach((logo) => {
+        logo.addEventListener("error", () => {
+          logo.remove();
+        });
+      });
+
+      const search = document.getElementById("service-search");
+      const cards = [...document.querySelectorAll(".service-card")];
+      const groups = [...document.querySelectorAll(".service-group")];
+
+      search.addEventListener("input", () => {
+        const query = search.value.trim().toLowerCase();
+
+        cards.forEach((card) => {
+          const haystack = `${card.textContent} ${card.dataset.tags}`.toLowerCase();
+          card.hidden = query.length > 0 && !haystack.includes(query);
+        });
+
+        groups.forEach((group) => {
+          const visibleCards = group.querySelectorAll(".service-card:not([hidden])");
+          group.hidden = visibleCards.length === 0;
+        });
+      });
+    </script>
+  </body>
+</html>
