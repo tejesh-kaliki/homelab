@@ -28,8 +28,8 @@ if [[ -f "$BACKUP_DIR/firefly-db.sql" ]]; then
 
   # Restore database
   docker exec -i firefly_iii_db \
-    sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"' \
-    < "$BACKUP_DIR/firefly-db.sql"
+    sh -c 'mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"' \
+    <"$BACKUP_DIR/firefly-db.sql"
 
   # Restore uploads
   if [[ -f "$BACKUP_DIR/firefly-uploads.tar.gz" ]]; then

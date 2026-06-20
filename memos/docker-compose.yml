@@ -1,0 +1,18 @@
+services:
+  memos:
+    image: neosmemo/memos:stable
+    container_name: memos
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/opt/memos
+    networks:
+      - homelab_proxy
+    environment:
+      MEMOS_PORT: 5230
+      MEMOS_DRIVER: sqlite
+      MEMOS_INSTANCE_URL: https://memos.example.com
+
+networks:
+  homelab_proxy:
+    external: true
+

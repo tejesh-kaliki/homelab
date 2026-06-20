@@ -13,3 +13,5 @@
 /password/.env
 /password/vw-data
 backups/
+/.DS_Store
+/memos/data

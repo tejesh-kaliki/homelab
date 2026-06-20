@@ -43,6 +43,12 @@
 		reverse_proxy beszel:8090
 	}
 
+	# Monitoring
+	@memos host memos.{$BASE_DOMAIN}
+	handle @memos {
+		reverse_proxy memos:5230
+	}
+
 	handle {
 		respond 404
 	}
