@@ -176,6 +176,7 @@
       document.querySelectorAll("[data-subdomain]").forEach((card) => {
         const subdomain = card.dataset.subdomain;
         card.href = `https://${subdomain}.${baseDomain}`;
+        card.referrerPolicy = "no-referrer";
         card.target = "_self";
       });
 
