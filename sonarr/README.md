@@ -29,6 +29,18 @@ sonarr/
 
 Both `config/` and `data/` are created automatically on first boot — nothing to create manually.
 
+To store the data folder outside this repository, set `DATA_DIR` before starting the stack:
+
+```bash
+DATA_DIR=/path/to/external/data docker compose up -d
+```
+
+You can also put it in a local `.env` file next to `docker-compose.yml`:
+
+```env
+DATA_DIR=/path/to/external/data
+```
+
 ## Start
 
 ```bash

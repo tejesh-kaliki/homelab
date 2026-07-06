@@ -29,7 +29,7 @@ services:
       - TZ=Asia/Kolkata
     volumes:
       - ./config/sonarr:/config
-      - ./data:/data
+      - ${DATA_DIR:-./data}:/data
     networks:
       - media
       - homelab_proxy
@@ -51,7 +51,8 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ./config/qbittorrent:/config
-      - ./data:/data
+      - ${DATA_DIR:-./data}:/data
+      - ./download/incomplete:/download/incomplete
     ports:
       # torrent port — must stay exposed for seeding/downloading
       - 6881:6881
@@ -71,7 +72,7 @@ services:
       - TZ=Asia/Kolkata
     volumes:
       - ./config/jellyfin:/config
-      - ./data/media:/media
+      - ${DATA_DIR:-./data}/media:/media
     networks:
       - media
       - homelab_proxy

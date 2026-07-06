@@ -12,8 +12,31 @@
 	# Finance
 	@firefly host firefly.{$BASE_DOMAIN}
 	handle @firefly {
-		header Content-Security-Policy ""
-		reverse_proxy firefly_iii_core:8080
+    # 1. Define which origins are allowed to connect (Localhost AND your original domain)
+    @allowed_origins header_regexp Origin `^https?://(localhost:\d+|firefly\.home\.mizustack\.com)$`
+
+    # 2. Intercept browser preflight OPTIONS requests
+    @cors_preflight {
+        method OPTIONS
+        expression {header.Origin} != null
+    }
+    handle @cors_preflight {
+        header @allowed_origins Access-Control-Allow-Origin "{http.request.header.Origin}"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept, X-Requested-With"
+        header Access-Control-Allow-Credentials "true"
+        respond "" 204
+    }
+
+    # 3. Inject CORS headers for normal API requests (GET, POST, etc.)
+    # header @allowed_origins Access-Control-Allow-Origin "{http.request.header.Origin}"
+    header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    header Access-Control-Allow-Headers "Authorization, Content-Type, Accept, X-Requested-With"
+    header Access-Control-Allow-Credentials "true"
+
+    # Your existing configuration lines
+    header Content-Security-Policy ""
+    reverse_proxy firefly_iii_core:8080
 	}
 
 	# Media
@@ -47,6 +70,12 @@
 	@memos host memos.{$BASE_DOMAIN}
 	handle @memos {
 		reverse_proxy memos:5230
+	}
+
+	# Local transcription
+	@speaches host speaches.{$BASE_DOMAIN}
+	handle @speaches {
+		reverse_proxy speaches:8000
 	}
 
 	# Service discovery dashboard

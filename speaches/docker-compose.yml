@@ -1,0 +1,19 @@
+services:
+  speaches:
+    image: ghcr.io/speaches-ai/speaches:latest-cpu
+    container_name: speaches
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Kolkata
+      WHISPER__TTL: 30
+    volumes:
+      - hf-hub-cache:/home/ubuntu/.cache/huggingface/hub
+    networks:
+      - homelab_proxy
+
+networks:
+  homelab_proxy:
+    external: true
+
+volumes:
+  hf-hub-cache:
