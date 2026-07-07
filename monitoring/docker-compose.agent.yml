@@ -1,0 +1,23 @@
+services:
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - beszel_agent_data:/var/lib/beszel-agent
+      # monitor other disks / partitions by mounting a folder in /extra-filesystems
+      # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
+    environment:
+      LISTEN: 45876
+      KEY: $BESZEL_KEY
+      TOKEN: $BESZEL_TOKEN
+      HUB_URL: http://beszel:8090
+    networks:
+      - monitoring
+    healthcheck:
+      test: ['CMD', '/agent', 'health']
+      interval: 120s
+
+volumes:
+  beszel_agent_data:
