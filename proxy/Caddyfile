@@ -78,6 +78,12 @@
 		reverse_proxy speaches:8000
 	}
 
+	# LLM gateway
+	@bifrost host bifrost.{$BASE_DOMAIN}
+	handle @bifrost {
+		reverse_proxy bifrost:8080
+	}
+
 	# Service discovery dashboard
 	@dashboard host {$BASE_DOMAIN}
 	handle @dashboard {
