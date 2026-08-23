@@ -1,0 +1,63 @@
+services:
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: rustfs-server
+    security_opt:
+      - "no-new-privileges:true"
+    # Not published to the host — Caddy proxies rustfs.${BASE_DOMAIN} (console)
+    # and rustfs-s3.${BASE_DOMAIN} (S3 API). For direct host access, add a
+    # `ports:` block instead (e.g. "9000:9000" / "9001:9001").
+    expose:
+      - "9000" # S3 API port
+      - "9001" # Console port
+    environment:
+      - RUSTFS_VOLUMES=/data/rustfs
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_ACCESS_KEY=$RUSTFS_ACCESS_KEY
+      - RUSTFS_SECRET_KEY=$RUSTFS_SECRET_KEY
+      - RUSTFS_OBS_LOGGER_LEVEL=info
+      - RUSTFS_UNSAFE_BYPASS_DISK_CHECK=${RUSTFS_UNSAFE_BYPASS_DISK_CHECK:-false}
+
+    volumes:
+      - $RUSTFS_PATH:/data/rustfs
+      - logs:/app/logs
+    networks:
+      - homelab_proxy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh", "-ec",
+          "host=\"$${RUSTFS_HEALTHCHECK_HOST:-127.0.0.1}\"; scheme=\"http\"; set -- -fsS; \
+          curl \"$${@}\" \"$${scheme}://$${host}:9000/health\" && \
+          curl \"$${@}\" \"$${scheme}://$${host}:9001/rustfs/console/health\""
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # RustFS volume permissions fixer service
+  volume-permission-helper:
+    image: alpine
+    volumes:
+      - $RUSTFS_PATH:/data
+      - logs:/logs
+    command: >
+      sh -c "
+        chown -R 10001:10001 /data /logs &&
+        echo 'Volume Permissions fixed' &&
+        exit 0
+      "
+    restart: "no"
+
+networks:
+  homelab_proxy:
+    external: true
+
+volumes:
+  logs:

@@ -84,6 +84,17 @@
 		reverse_proxy bifrost:8080
 	}
 
+	# Object storage
+	@rustfs host rustfs.{$BASE_DOMAIN}
+	handle @rustfs {
+		reverse_proxy rustfs-server:9001
+	}
+
+	@rustfs-s3 host rustfs-s3.{$BASE_DOMAIN}
+	handle @rustfs-s3 {
+		reverse_proxy rustfs-server:9000
+	}
+
 	# Service discovery dashboard
 	@dashboard host {$BASE_DOMAIN}
 	handle @dashboard {

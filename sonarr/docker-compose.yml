@@ -65,6 +65,8 @@ services:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     restart: unless-stopped
+    ports:
+      - 8096:8096
     labels:
       homelab.stack: media
       homelab.role: streaming

@@ -5,6 +5,7 @@
 # sonarr stack — runtime-generated, not ours
 /sonarr/config/
 /sonarr/data/
+/sonarr/download/
 
 # monitoring stack — only prometheus.yml and grafana provisioning are ours
 /monitoring/config/grafana/provisioning/dashboards/*.json
@@ -13,6 +14,9 @@
 /password/.env
 /password/vw-data
 backups/
-/.DS_Store
+.DS_Store
 /memos/data
 /sonarr/.env
+/rustfs/.env
+/rustfs/data
+/bifrost/.env

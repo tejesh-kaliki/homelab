@@ -3,6 +3,7 @@ services:
     image: maximhq/bifrost:latest
     ports:
       - "39274:8080"
+    restart: unless-stopped
     env_file:
         - .env
     environment:
@@ -30,6 +31,7 @@ services:
 
   postgres:
     image: postgres:18-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: bifrost
       POSTGRES_PASSWORD: $BIFROST_DB_PASSWORD

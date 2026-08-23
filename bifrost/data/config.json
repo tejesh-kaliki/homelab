@@ -34,6 +34,16 @@
       "password": "env.BIFROST_DB_PASSWORD",
       "db_name": "bifrost",
       "ssl_mode": "disable"
+    },
+    "object_storage": {
+      "type": "s3",
+      "bucket": "env.RUSTFS_BUCKET",
+      "compress": false,
+      "region": "ap-south-1",
+      "endpoint": "env.RUSTFS_ENDPOINT",
+      "access_key_id": "env.RUSTFS_ACCESS_KEY_ID",
+      "secret_access_key": "env.RUSTFS_SECRET_ACCESS_KEY",
+      "force_path_style": true
     }
   }
 }
