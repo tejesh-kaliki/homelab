@@ -1,0 +1,19 @@
+services:
+  tunnel-forwarding:
+    build:
+      context: ../../personal/tunnel-forwarding/backend
+    container_name: tunnel-forwarding
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - SERVER_PORT=8080
+      - APP_ENV=production
+    volumes:
+      - ./data:/data
+    networks:
+      - homelab_proxy
+
+networks:
+  homelab_proxy:
+    external: true

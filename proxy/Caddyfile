@@ -95,6 +95,12 @@
 		reverse_proxy rustfs-server:9000
 	}
 
+	# Tunnel Forwarding dashboard
+	@tunnelforwarding host tunnel.{$BASE_DOMAIN}
+	handle @tunnelforwarding {
+		reverse_proxy tunnel-forwarding:8080
+	}
+
 	# Service discovery dashboard
 	@dashboard host {$BASE_DOMAIN}
 	handle @dashboard {

@@ -1,4 +1,19 @@
 services:
+  wait-for-ollama:
+    image: curlimages/curl:latest
+    restart: "no"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "Waiting for Ollama on host.docker.internal:11434..."
+        until curl -sf http://host.docker.internal:11434/api/version >/dev/null; do
+          sleep 2
+        done
+        echo "Ollama is up."
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   bifrost:
     image: maximhq/bifrost:latest
     ports:
@@ -24,7 +39,10 @@ services:
           cpus: '2'
           memory: 500M
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
+      wait-for-ollama:
+        condition: service_completed_successfully
     networks:
       - proxy
       - default

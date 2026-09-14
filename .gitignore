@@ -20,3 +20,5 @@ backups/
 /rustfs/.env
 /rustfs/data
 /bifrost/.env
+/tunnel-forwarding/.env
+/tunnel-forwarding/data
