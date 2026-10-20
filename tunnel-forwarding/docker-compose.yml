@@ -9,6 +9,15 @@ services:
     environment:
       - SERVER_PORT=8080
       - APP_ENV=production
+      # The app itself runs in this container, but the ports it publishes
+      # belong to the Mac mini host (or other containers publishing to it) —
+      # so the "is anything listening" check must dial the host, not the
+      # container's own loopback. host.docker.internal resolves to the host
+      # on Docker Desktop for Mac natively; extra_hosts below makes the same
+      # mapping explicit for engines that don't add it by default.
+      - PORT_CHECK_HOST=host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data:/data
     networks:
