@@ -23,6 +23,16 @@ my-browser:
 
 If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989, 9696, 8080).
 
+## Planned: SOCKS5 proxy for native apps (not built yet)
+
+A native Mac app can't join the container's network, but it can use a proxy that runs inside it, so only that app goes through Mullvad.
+
+- Run a SOCKS5 proxy in the `vpn` namespace (Tailscale's `TS_SOCKS5_SERVER`, or a small proxy container with `network_mode: container:vpn`) and publish it on `127.0.0.1:1080` only, so nothing else on the LAN can use the exit.
+- Apps that support proxies (browsers, curl, git, ssh `ProxyCommand`) use `socks5h://127.0.0.1:1080`, so DNS goes through the VPN too. Apps that ignore proxies need `proxychains` or a per-app tool like Proxifier.
+- **`localhost` and `127.0.0.1` through the proxy mean the container, not the Mac.** Make the app bypass the proxy for local addresses (Firefox "No proxy for", Chrome/Playwright `--proxy-bypass-list`, or a PAC file): `localhost, 127.0.0.1, 192.168.0.0/16, .<BASE_DOMAIN>`.
+- LAN and Docker ranges already stay off the VPN (`--exit-node-allow-lan-access`). From inside the namespace, container names on `homelab_proxy` (e.g. `jellyfin:8096`) and the Mac via its gateway IP work.
+- To reach the Mac by name, add `extra_hosts: ["host.docker.internal:host-gateway"]` to the `vpn` service (as `tunnel-forwarding` does). Re-creating `vpn` orphans the sonarr stack, so re-create that afterwards.
+
 ## Behaviour to know
 
 - **Kill switch:** `entrypoint.sh` rejects any non-root egress that isn't loopback, the tailnet, or a private range, so the apps get no connectivity (rather than a leak) if the exit node drops or the container is starting. IPv6 is blocked for them entirely.
