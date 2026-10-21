@@ -22,3 +22,4 @@ backups/
 /bifrost/.env
 /tunnel-forwarding/.env
 /tunnel-forwarding/data
+/vpn/.env

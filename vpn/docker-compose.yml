@@ -1,0 +1,53 @@
+services:
+  # Tailscale node that sends everything through a Mullvad exit node. Other
+  # containers join its network namespace with `network_mode: container:vpn`,
+  # so their traffic leaves through Mullvad while private ranges (LAN, Docker
+  # networks, other stacks like Jellyfin) stay direct.
+  #
+  # Anything that shares this namespace is reached from Caddy via the aliases
+  # below, not its own container name — add an alias here for each new one.
+  vpn:
+    image: tailscale/tailscale:latest
+    container_name: vpn
+    hostname: homelab-vpn
+    restart: unless-stopped
+    labels:
+      homelab.stack: vpn
+      homelab.role: egress
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    # Kill switch first, then the normal Tailscale entrypoint.
+    entrypoint: ["/bin/sh", "/vpn/entrypoint.sh"]
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY:-}
+      - TS_HOSTNAME=homelab-vpn
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      # Applied by entrypoint.sh (with --exit-node-allow-lan-access, which keeps
+      # LAN / Docker subnets off the tunnel)
+      - MULLVAD_EXIT_NODE=${MULLVAD_EXIT_NODE:?set MULLVAD_EXIT_NODE in vpn/.env}
+    volumes:
+      - ./entrypoint.sh:/vpn/entrypoint.sh:ro
+      - tailscale-state:/var/lib/tailscale
+    healthcheck:
+      # Healthy only once traffic really exits via Mullvad
+      test: ["CMD-SHELL", "wget -qO- -T 8 https://am.i.mullvad.net/connected | grep -q 'You are connected to Mullvad'"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    networks:
+      homelab_proxy:
+        aliases:
+          - sonarr
+          - prowlarr
+          - qbittorrent
+
+volumes:
+  tailscale-state:
+
+networks:
+  homelab_proxy:
+    external: true

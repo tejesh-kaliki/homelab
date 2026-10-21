@@ -11,6 +11,10 @@ Auto-downloads anime you follow and streams it via Jellyfin.
 | Prowlarr | 9696 | Indexer manager — syncs sources to Sonarr automatically |
 | Jellyfin | 8096 | Media server for streaming |
 
+## VPN
+
+Sonarr, Prowlarr and qBittorrent run inside the `vpn` stack's network namespace (`network_mode: container:vpn`), so their internet traffic exits through Mullvad. Jellyfin does not. Start `vpn` first, and re-create this stack (`docker compose up -d --force-recreate`) whenever the `vpn` container is re-created. The apps still reach each other by the same hostnames and keep the same Caddy routes; see `vpn/README.md`.
+
 ## Directory layout
 
 ```
