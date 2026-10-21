@@ -43,6 +43,22 @@ if [[ -f "$BACKUP_DIR/firefly-db.sql" ]]; then
   echo "     done"
 fi
 
+# --- Memos ---
+if [[ -f "$BACKUP_DIR/memos.tar.gz" ]]; then
+  echo "[+] Memos"
+  docker stop memos 2>/dev/null || true
+  rm -rf ./memos/data
+  tar -xzf "$BACKUP_DIR/memos.tar.gz" -C ./memos
+  docker start memos 2>/dev/null || true
+  echo "     done"
+fi
+
+# --- Env files (extracts over existing ones; only needed on a fresh machine) ---
+if [[ -f "$BACKUP_DIR/env-files.tar.gz" && "${RESTORE_ENV:-false}" == "true" ]]; then
+  echo "[+] Env files"
+  tar -xzf "$BACKUP_DIR/env-files.tar.gz" -C .
+fi
+
 # --- Sonarr stack (optional) ---
 if [[ -f "$BACKUP_DIR/sonarr-config.tar.gz" ]]; then
   echo "[3/3] Sonarr stack config"
