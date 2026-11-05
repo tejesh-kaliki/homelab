@@ -65,9 +65,9 @@ chmod 600 "$BACKUP_DIR"/*
 
 if [[ "${INCLUDE_SONARR:-false}" == "true" ]]; then
   log "[+] Sonarr stack config"
-  docker stop sonarr prowlarr qbittorrent >/dev/null 2>&1 || true
+  docker stop sonarr whisparr prowlarr qbittorrent >/dev/null 2>&1 || true
   tar -czf "$BACKUP_DIR/sonarr-config.tar.gz" -C ./sonarr config
-  docker start sonarr prowlarr qbittorrent >/dev/null 2>&1 || true
+  docker start sonarr whisparr prowlarr qbittorrent >/dev/null 2>&1 || true
 fi
 
 # Retention: only prune the timestamped snapshots we create ourselves.

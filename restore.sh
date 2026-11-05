@@ -62,11 +62,11 @@ fi
 # --- Sonarr stack (optional) ---
 if [[ -f "$BACKUP_DIR/sonarr-config.tar.gz" ]]; then
   echo "[3/3] Sonarr stack config"
-  docker stop sonarr prowlarr qbittorrent 2>/dev/null || true
+  docker stop sonarr whisparr prowlarr qbittorrent 2>/dev/null || true
   rm -rf ./sonarr/config
   mkdir -p ./sonarr/config
   tar -xzf "$BACKUP_DIR/sonarr-config.tar.gz" -C ./sonarr
-  docker start sonarr prowlarr qbittorrent 2>/dev/null || true
+  docker start sonarr whisparr prowlarr qbittorrent 2>/dev/null || true
   echo "     done"
 fi
 

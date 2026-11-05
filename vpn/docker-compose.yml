@@ -25,6 +25,9 @@ services:
       - TS_HOSTNAME=homelab-vpn
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_USERSPACE=false
+      # Node is already logged in. Repeating `tailscale up` fails once any
+      # non-default flag is stored, so later starts only use `tailscale set`.
+      - TS_AUTH_ONCE=true
       # Applied by entrypoint.sh (with --exit-node-allow-lan-access, which keeps
       # LAN / Docker subnets off the tunnel)
       - MULLVAD_EXIT_NODE=${MULLVAD_EXIT_NODE:?set MULLVAD_EXIT_NODE in vpn/.env}
@@ -44,6 +47,7 @@ services:
           - sonarr
           - prowlarr
           - qbittorrent
+          - whisparr
 
 volumes:
   tailscale-state:

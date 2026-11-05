@@ -13,7 +13,7 @@ Docker Compose stacks for a Mac mini homelab (OrbStack). Each top-level director
 | `rustfs` | S3-compatible object storage on the external drive |
 | `bifrost` | Bifrost LLM gateway, uses RustFS |
 | `vpn` | Tailscale node using a Mullvad exit node; other containers share its network (see `vpn/README.md`) |
-| `sonarr` | Sonarr, Prowlarr, qBittorrent, Jellyfin media stack (all but Jellyfin egress via `vpn`) |
+| `sonarr` | Sonarr, Whisparr, Prowlarr, qBittorrent, Jellyfin media stack (all but Jellyfin egress via `vpn`) |
 | `speaches` | Speech-to-text / TTS server |
 | `monitoring` | Beszel hub and agent |
 | `tunnel-forwarding` | Tunnel forwarding service |

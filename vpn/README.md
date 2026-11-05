@@ -2,7 +2,7 @@
 
 A Tailscale node that routes everything through a Mullvad exit node. Containers opt in with `network_mode: container:vpn`; they then share this container's network, so their internet traffic leaves through Mullvad. Private ranges (LAN, Docker networks, other stacks) go direct, so e.g. Jellyfin and Caddy are unaffected.
 
-Currently used by Sonarr, Prowlarr and qBittorrent (`sonarr/`).
+Currently used by Sonarr, Whisparr, Prowlarr and qBittorrent (`sonarr/`).
 
 ## Setup
 
@@ -21,7 +21,7 @@ my-browser:
   network_mode: container:vpn
 ```
 
-If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989, 9696, 8080).
+If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989, 6969, 9696, 8080).
 
 ## Planned: SOCKS5 proxy for native apps (not built yet)
 

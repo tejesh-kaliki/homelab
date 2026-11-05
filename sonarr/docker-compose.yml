@@ -32,6 +32,23 @@ services:
       - ./config/sonarr:/config
       - ${DATA_DIR:-./data}:/data
 
+  whisparr:
+    image: ghcr.io/thespad/whisparr:v3
+    container_name: whisparr
+    restart: unless-stopped
+    # Egress via Mullvad: shares the vpn stack's network namespace
+    network_mode: container:vpn
+    labels:
+      homelab.stack: media
+      homelab.role: movie-manager
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - ./config/whisparr:/config
+      - ${DATA_DIR:-./data}:/data
+
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
