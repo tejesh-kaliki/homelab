@@ -14,6 +14,7 @@ Docker Compose stacks for a Mac mini homelab (OrbStack). Each top-level director
 | `bifrost` | Bifrost LLM gateway, uses RustFS |
 | `vpn` | Tailscale node using a Mullvad exit node; other containers share its network (see `vpn/README.md`) |
 | `sonarr` | Sonarr, Whisparr, Prowlarr, qBittorrent, Jellyfin media stack (all but Jellyfin egress via `vpn`) |
+| `animarr` | animarr anime tracker (AniList → Nyaa → qBittorrent → Jellyfin). Runs the image from GHCR; source lives in `tejesh-kaliki/animarr`. Shares the `vpn` namespace |
 | `speaches` | Speech-to-text / TTS server |
 | `monitoring` | Beszel hub and agent |
 | `tunnel-forwarding` | Tunnel forwarding service |
@@ -24,7 +25,7 @@ Stacks that serve a web UI join the external `homelab_proxy` network, which has 
 docker network create homelab_proxy
 ```
 
-To add a service, add a host block to `proxy/Caddyfile` and put the container on that network. Some stacks have their own README with more detail (`monitoring`, `rustfs`, `sonarr`, `speaches`, `vpn`).
+To add a service, add a host block to `proxy/Caddyfile` and put the container on that network. Some stacks have their own README with more detail (`animarr`, `monitoring`, `rustfs`, `sonarr`, `speaches`, `vpn`).
 
 ## Boot ordering
 
@@ -44,6 +45,7 @@ macOS only mounts external drives after login, and OrbStack restarts containers 
 | Memos | `memos/data` tarball, container stopped for a few seconds |
 | Firefly III | `mariadb-dump --single-transaction` plus the uploads volume, app stays up |
 | `.env` files | Tarball of every stack's gitignored env files (Firefly's `APP_KEY` is needed to read its data) |
+| animarr | `animarr/config` (database and `secret.key`) tarball, container stopped for a few seconds |
 | Sonarr config | Only with `INCLUDE_SONARR=true` |
 
 ```sh

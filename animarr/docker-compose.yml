@@ -1,0 +1,35 @@
+services:
+  animarr:
+    # Built and published by tejesh-kaliki/animarr (GitHub Actions) on every push to main.
+    image: ghcr.io/tejesh-kaliki/animarr:latest
+    pull_policy: always
+    container_name: animarr
+    restart: unless-stopped
+    # Shares the vpn container's network namespace, like Sonarr and qBittorrent.
+    # Docker ignores `ports:` here. The vpn service publishes 127.0.0.1:8990 and
+    # carries the `animarr` alias that Caddy uses (see vpn/docker-compose.yml).
+    network_mode: container:vpn
+    labels:
+      homelab.stack: media
+      homelab.role: anime-tracker
+    environment:
+      TZ: Asia/Kolkata
+      LISTEN_ADDR: ":8990"
+      DATA_PATH: /config
+      LIBRARY_DIR: /data/media/anime
+      DOWNLOADS_DIR: /data/downloads
+      ANILIST_USERNAME: ${ANILIST_USERNAME:-}
+      ANILIST_TOKEN: ${ANILIST_TOKEN:-}
+      AUTOMATION_ENABLED: ${AUTOMATION_ENABLED:-false}
+      ANIMARR_SECRET_KEY: ${ANIMARR_SECRET_KEY:-}
+      NYAA_CATEGORY: ${NYAA_CATEGORY:-1_2}
+      NYAA_URLS: ${NYAA_URLS:-https://nyaa.si}
+      QB_URL: http://127.0.0.1:8080
+      QB_USERNAME: ${QB_USERNAME:-}
+      QB_PASSWORD: ${QB_PASSWORD:-}
+      QB_CATEGORY: animarr
+      JELLYFIN_URL: ${JELLYFIN_URL:-http://jellyfin:8096}
+      JELLYFIN_API_KEY: ${JELLYFIN_API_KEY:-}
+    volumes:
+      - ./config:/config
+      - ${DATA_DIR:?set DATA_DIR in .env}:/data

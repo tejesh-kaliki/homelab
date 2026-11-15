@@ -24,5 +24,7 @@ backups/
 /tunnel-forwarding/data
 /vpn/.env
 
-# animarr lives in its own repo (tejesh-kaliki/animarr)
-/animarr/
+# animarr runtime (source lives in tejesh-kaliki/animarr)
+/animarr/config/
+/animarr/data/
+/animarr/.env

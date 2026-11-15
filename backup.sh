@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Back up the critical stacks (Vaultwarden, Firefly III, Memos, plus the
+# Back up the critical stacks (Vaultwarden, Firefly III, Memos, animarr, plus the
 # gitignored .env files that can't be rebuilt from the repo) to the external
 # drive. Run by hand or via backup/install.sh (daily launchd job).
 #
@@ -54,6 +54,11 @@ docker run --rm \
   -v firefly-iii_firefly_iii_upload:/data:ro \
   -v "$(realpath "$BACKUP_DIR")":/backup \
   alpine tar -czf /backup/firefly-uploads.tar.gz -C /data .
+
+log "[+] animarr (database and secret.key)"
+if docker inspect animarr >/dev/null 2>&1 && [[ -d ./animarr/config ]]; then
+  tar_stopped animarr ./animarr config "$BACKUP_DIR/animarr.tar.gz"
+fi
 
 log "[4/4] Env files"
 # APP_KEY in firefly's .env is needed to read its data back; the rest are

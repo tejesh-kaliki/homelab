@@ -53,6 +53,17 @@ if [[ -f "$BACKUP_DIR/memos.tar.gz" ]]; then
   echo "     done"
 fi
 
+# --- animarr ---
+if [[ -f "$BACKUP_DIR/animarr.tar.gz" ]]; then
+  echo "[+] animarr"
+  docker stop animarr 2>/dev/null || true
+  rm -rf ./animarr/config
+  mkdir -p ./animarr
+  tar -xzf "$BACKUP_DIR/animarr.tar.gz" -C ./animarr
+  docker start animarr 2>/dev/null || true
+  echo "     done"
+fi
+
 # --- Env files (extracts over existing ones; only needed on a fresh machine) ---
 if [[ -f "$BACKUP_DIR/env-files.tar.gz" && "${RESTORE_ENV:-false}" == "true" ]]; then
   echo "[+] Env files"
