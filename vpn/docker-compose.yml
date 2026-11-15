@@ -48,10 +48,7 @@ services:
     networks:
       homelab_proxy:
         aliases:
-          - sonarr
-          - prowlarr
           - qbittorrent
-          - whisparr
           - animarr
 
 volumes:

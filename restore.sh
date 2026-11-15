@@ -53,17 +53,6 @@ if [[ -f "$BACKUP_DIR/memos.tar.gz" ]]; then
   echo "     done"
 fi
 
-# --- animarr ---
-if [[ -f "$BACKUP_DIR/animarr.tar.gz" ]]; then
-  echo "[+] animarr"
-  docker stop animarr 2>/dev/null || true
-  rm -rf ./animarr/config
-  mkdir -p ./animarr
-  tar -xzf "$BACKUP_DIR/animarr.tar.gz" -C ./animarr
-  docker start animarr 2>/dev/null || true
-  echo "     done"
-fi
-
 # --- Env files (extracts over existing ones; only needed on a fresh machine) ---
 if [[ -f "$BACKUP_DIR/env-files.tar.gz" && "${RESTORE_ENV:-false}" == "true" ]]; then
   echo "[+] Env files"
@@ -73,11 +62,22 @@ fi
 # --- Sonarr stack (optional) ---
 if [[ -f "$BACKUP_DIR/sonarr-config.tar.gz" ]]; then
   echo "[3/3] Sonarr stack config"
-  docker stop sonarr whisparr prowlarr qbittorrent 2>/dev/null || true
+  docker stop qbittorrent 2>/dev/null || true
   rm -rf ./sonarr/config
   mkdir -p ./sonarr/config
   tar -xzf "$BACKUP_DIR/sonarr-config.tar.gz" -C ./sonarr
-  docker start sonarr whisparr prowlarr qbittorrent 2>/dev/null || true
+  docker start qbittorrent 2>/dev/null || true
+  echo "     done"
+fi
+
+# --- animarr (after the sonarr stack config, which also contains it; this copy is the fresher one) ---
+if [[ -f "$BACKUP_DIR/animarr.tar.gz" ]]; then
+  echo "[+] animarr"
+  docker stop animarr 2>/dev/null || true
+  rm -rf ./sonarr/config/animarr
+  mkdir -p ./sonarr/config
+  tar -xzf "$BACKUP_DIR/animarr.tar.gz" -C ./sonarr
+  docker start animarr 2>/dev/null || true
   echo "     done"
 fi
 

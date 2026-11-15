@@ -56,8 +56,8 @@ docker run --rm \
   alpine tar -czf /backup/firefly-uploads.tar.gz -C /data .
 
 log "[+] animarr (database and secret.key)"
-if docker inspect animarr >/dev/null 2>&1 && [[ -d ./animarr/config ]]; then
-  tar_stopped animarr ./animarr config "$BACKUP_DIR/animarr.tar.gz"
+if docker inspect animarr >/dev/null 2>&1 && [[ -d ./sonarr/config/animarr ]]; then
+  tar_stopped animarr ./sonarr config/animarr "$BACKUP_DIR/animarr.tar.gz"
 fi
 
 log "[4/4] Env files"
@@ -70,9 +70,9 @@ chmod 600 "$BACKUP_DIR"/*
 
 if [[ "${INCLUDE_SONARR:-false}" == "true" ]]; then
   log "[+] Sonarr stack config"
-  docker stop sonarr whisparr prowlarr qbittorrent >/dev/null 2>&1 || true
+  docker stop qbittorrent >/dev/null 2>&1 || true
   tar -czf "$BACKUP_DIR/sonarr-config.tar.gz" -C ./sonarr config
-  docker start sonarr whisparr prowlarr qbittorrent >/dev/null 2>&1 || true
+  docker start qbittorrent >/dev/null 2>&1 || true
 fi
 
 # Retention: only prune the timestamped snapshots we create ourselves.

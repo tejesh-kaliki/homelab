@@ -1,54 +1,4 @@
 services:
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    restart: unless-stopped
-    # Egress via Mullvad: shares the vpn stack's network namespace
-    network_mode: container:vpn
-    labels:
-      homelab.stack: media
-      homelab.role: indexer
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    volumes:
-      - ./config/prowlarr:/config
-
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
-    restart: unless-stopped
-    # Egress via Mullvad: shares the vpn stack's network namespace
-    network_mode: container:vpn
-    labels:
-      homelab.stack: media
-      homelab.role: series-manager
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    volumes:
-      - ./config/sonarr:/config
-      - ${DATA_DIR:-./data}:/data
-
-  whisparr:
-    image: ghcr.io/thespad/whisparr:v3
-    container_name: whisparr
-    restart: unless-stopped
-    # Egress via Mullvad: shares the vpn stack's network namespace
-    network_mode: container:vpn
-    labels:
-      homelab.stack: media
-      homelab.role: movie-manager
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    volumes:
-      - ./config/whisparr:/config
-      - ${DATA_DIR:-./data}:/data
-
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -67,6 +17,43 @@ services:
       - ./config/qbittorrent:/config
       - ${DATA_DIR:-./data}:/data
       - ./download/incomplete:/download/incomplete
+
+  animarr:
+    # Built and published by tejesh-kaliki/animarr (GitHub Actions) on every push to main.
+    image: ghcr.io/tejesh-kaliki/animarr:latest
+    pull_policy: always
+    container_name: animarr
+    restart: unless-stopped
+    # Shares the vpn container's network namespace, like qBittorrent.
+    # Docker ignores `ports:` here. The vpn service publishes 127.0.0.1:8990 and
+    # carries the `animarr` alias that Caddy uses (see vpn/docker-compose.yml).
+    network_mode: container:vpn
+    labels:
+      homelab.stack: media
+      homelab.role: anime-tracker
+    environment:
+      TZ: Asia/Kolkata
+      LISTEN_ADDR: ":8990"
+      DATA_PATH: /config
+      LIBRARY_DIR: /data/media/anime
+      DOWNLOADS_DIR: /data/downloads
+      ANILIST_USERNAME: ${ANILIST_USERNAME:-}
+      ANILIST_TOKEN: ${ANILIST_TOKEN:-}
+      AUTOMATION_ENABLED: ${AUTOMATION_ENABLED:-false}
+      ANIMARR_SECRET_KEY: ${ANIMARR_SECRET_KEY:-}
+      NYAA_CATEGORY: ${NYAA_CATEGORY:-1_2}
+      NYAA_URLS: ${NYAA_URLS:-https://nyaa.si}
+      QB_URL: http://127.0.0.1:8080
+      QB_USERNAME: ${QB_USERNAME:-}
+      QB_PASSWORD: ${QB_PASSWORD:-}
+      QB_CATEGORY: animarr
+      JELLYFIN_URL: ${JELLYFIN_URL:-http://jellyfin:8096}
+      JELLYFIN_API_KEY: ${JELLYFIN_API_KEY:-}
+    volumes:
+      - ./config/animarr:/config
+      - ${DATA_DIR:-./data}:/data
+    depends_on:
+      - qbittorrent
 
   jellyfin:
     image: jellyfin/jellyfin:latest

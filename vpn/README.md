@@ -2,7 +2,7 @@
 
 A Tailscale node that routes everything through a Mullvad exit node. Containers opt in with `network_mode: container:vpn`; they then share this container's network, so their internet traffic leaves through Mullvad. Private ranges (LAN, Docker networks, other stacks) go direct, so e.g. Jellyfin and Caddy are unaffected.
 
-Currently used by Sonarr, Whisparr, Prowlarr and qBittorrent (`sonarr/`).
+Currently used by qBittorrent (`sonarr/`) and animarr.
 
 ## Setup
 
@@ -12,7 +12,7 @@ Currently used by Sonarr, Whisparr, Prowlarr and qBittorrent (`sonarr/`).
 4. `docker compose up -d`, then `docker compose ps` — it is `healthy` once traffic really exits via Mullvad.
 5. Re-create the sonarr stack: `cd ../sonarr && docker compose up -d --force-recreate`.
 
-Check: `docker exec sonarr wget -qO- https://am.i.mullvad.net/connected`.
+Check: `docker exec qbittorrent wget -qO- https://am.i.mullvad.net/connected`.
 
 ## Adding another container
 
@@ -21,9 +21,9 @@ my-browser:
   network_mode: container:vpn
 ```
 
-If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989 Sonarr, 6969 Whisparr, 9696 Prowlarr, 8080 qBittorrent, 8990 animarr).
+If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8080 qBittorrent, 8990 animarr).
 
-animarr (its own repo, `tejesh-kaliki/animarr`, cloned at `../animarr`) listens on 8990 inside this namespace. Caddy proxies `animarr.$BASE_DOMAIN` to `animarr:8990`, which resolves through the `animarr` alias on the vpn service. The vpn service also publishes `127.0.0.1:8990:8990` for local checks on the host. It is bound to loopback because animarr has no login. Publishing happens on the vpn service, not on animarr (it uses `network_mode: container:vpn`). Recreating vpn drops the namespace the sharing stacks use, so recreate sonarr and animarr afterwards.
+animarr (part of the `sonarr/` stack; source in `tejesh-kaliki/animarr`) listens on 8990 inside this namespace. Caddy proxies `animarr.$BASE_DOMAIN` to `animarr:8990`, which resolves through the `animarr` alias on the vpn service. The vpn service also publishes `127.0.0.1:8990:8990` for local checks on the host. It is bound to loopback because animarr has no login. Publishing happens on the vpn service, not on animarr (it uses `network_mode: container:vpn`). Recreating vpn drops the namespace the sharing stacks use, so recreate the sonarr stack (qBittorrent and animarr) afterwards.
 
 ## Planned: SOCKS5 proxy for native apps (not built yet)
 

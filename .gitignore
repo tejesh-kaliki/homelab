@@ -23,8 +23,3 @@ backups/
 /tunnel-forwarding/.env
 /tunnel-forwarding/data
 /vpn/.env
-
-# animarr runtime (source lives in tejesh-kaliki/animarr)
-/animarr/config/
-/animarr/data/
-/animarr/.env
