@@ -14,7 +14,6 @@ Docker Compose stacks for a Mac mini homelab (OrbStack). Each top-level director
 | `bifrost` | Bifrost LLM gateway, uses RustFS |
 | `vpn` | Tailscale node using a Mullvad exit node; other containers share its network (see `vpn/README.md`) |
 | `sonarr` | qBittorrent, animarr (anime tracker, image from GHCR, source in `tejesh-kaliki/animarr`), Jellyfin media stack (all but Jellyfin egress via `vpn`) |
-| `speaches` | Speech-to-text / TTS server |
 | `monitoring` | Beszel hub and agent |
 | `tunnel-forwarding` | Tunnel forwarding service |
 
@@ -24,7 +23,7 @@ Stacks that serve a web UI join the external `homelab_proxy` network, which has 
 docker network create homelab_proxy
 ```
 
-To add a service, add a host block to `proxy/Caddyfile` and put the container on that network. Some stacks have their own README with more detail (`monitoring`, `rustfs`, `sonarr`, `speaches`, `vpn`).
+To add a service, add a host block to `proxy/Caddyfile` and put the container on that network. Some stacks have their own README with more detail (`monitoring`, `rustfs`, `sonarr`, `vpn`).
 
 ## Boot ordering
 

@@ -67,12 +67,6 @@
 		reverse_proxy memos:5230
 	}
 
-	# Local transcription
-	@speaches host speaches.{$BASE_DOMAIN}
-	handle @speaches {
-		reverse_proxy speaches:8000
-	}
-
 	# LLM gateway
 	@bifrost host bifrost.{$BASE_DOMAIN}
 	handle @bifrost {
