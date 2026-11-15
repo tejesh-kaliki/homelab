@@ -23,3 +23,6 @@ backups/
 /tunnel-forwarding/.env
 /tunnel-forwarding/data
 /vpn/.env
+
+# animarr lives in its own repo (tejesh-kaliki/animarr)
+/animarr/

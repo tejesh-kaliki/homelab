@@ -50,6 +50,11 @@
 		reverse_proxy sonarr:8989
 	}
 
+	@animarr host animarr.{$BASE_DOMAIN}
+	handle @animarr {
+		reverse_proxy animarr:8990
+	}
+
 	@whisparr host whisparr.{$BASE_DOMAIN}
 	handle @whisparr {
 		reverse_proxy whisparr:6969

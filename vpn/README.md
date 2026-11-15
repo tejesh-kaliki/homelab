@@ -21,7 +21,9 @@ my-browser:
   network_mode: container:vpn
 ```
 
-If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989, 6969, 9696, 8080).
+If it serves a web UI through Caddy, add its container name as an extra alias under `networks.homelab_proxy.aliases` in `docker-compose.yml` and point Caddy at `<alias>:<port>`. Ports must not clash with the other containers in the namespace (8989 Sonarr, 6969 Whisparr, 9696 Prowlarr, 8080 qBittorrent, 8990 animarr).
+
+animarr (its own repo, `tejesh-kaliki/animarr`, cloned at `../animarr`) listens on 8990 inside this namespace. Caddy proxies `animarr.$BASE_DOMAIN` to `animarr:8990`, which resolves through the `animarr` alias on the vpn service. The vpn service also publishes `127.0.0.1:8990:8990` for local checks on the host. It is bound to loopback because animarr has no login. Publishing happens on the vpn service, not on animarr (it uses `network_mode: container:vpn`). Recreating vpn drops the namespace the sharing stacks use, so recreate sonarr and animarr afterwards.
 
 ## Planned: SOCKS5 proxy for native apps (not built yet)
 

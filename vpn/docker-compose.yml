@@ -41,6 +41,10 @@ services:
       timeout: 15s
       retries: 3
       start_period: 60s
+    # Published on loopback only: animarr has no login. Caddy reaches it via the
+    # homelab_proxy alias; this is for local checks on the host.
+    ports:
+      - 127.0.0.1:8990:8990
     networks:
       homelab_proxy:
         aliases:
@@ -48,6 +52,7 @@ services:
           - prowlarr
           - qbittorrent
           - whisparr
+          - animarr
 
 volumes:
   tailscale-state:
